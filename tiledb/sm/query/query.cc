@@ -34,7 +34,9 @@
 #include "tiledb/sm/misc/comparators.h"
 #include "tiledb/sm/misc/logger.h"
 #include "tiledb/sm/misc/utils.h"
+#include "tiledb/sm/query/dense_cell_range_iter.h"
 
+#include <array>
 #include <cassert>
 #include <set>
 #include <sstream>
@@ -454,6 +456,102 @@ Status Query::overflow(
   return Status::Ok();
 }
 
+Status Query::dense_read() {
+  auto coords_type = array_schema_->coords_type();
+  switch (coords_type) {
+    case Datatype::INT8:
+      return dense_read<int8_t>();
+    case Datatype::UINT8:
+      return dense_read<uint8_t>();
+    case Datatype::INT16:
+      return dense_read<int16_t>();
+    case Datatype::UINT16:
+      return dense_read<uint16_t>();
+    case Datatype::INT32:
+      return dense_read<int>();
+    case Datatype::UINT32:
+      return dense_read<unsigned>();
+    case Datatype::INT64:
+      return dense_read<int64_t>();
+    case Datatype::UINT64:
+      return dense_read<uint64_t>();
+    default:
+      return LOG_STATUS(
+          Status::SparseReaderError("Cannot read; Unsupported domain type"));
+  }
+
+  return Status::Ok();
+}
+
+template <class T>
+Status Query::dense_read() {
+  // For easy reference
+  auto domain = array_schema_->domain();
+  auto subarray_len = 2 * array_schema_->dim_num();
+  std::vector<T> subarray;
+  subarray.resize(subarray_len);
+  for (size_t i = 0; i < subarray_len; ++i)
+    subarray[i] = ((T*)subarray_)[i];
+
+  // TODO: compute overlapping tiles and sort in the order of result tile layout
+  // TODO: for each tile, compute a vector of fragment cell range iterators
+  // (carrying fragment id) based on tile/non-empty domain overlap
+  // TODO: create a cell range iterator over the entire subarray
+  // TODO: iterate over the subarray cell range iterator ranges, retrieving a
+  // tile id
+  // TODO: for each such range, create result ranges based on the fragment cell
+  // ranges
+  // TODO: until end
+  // TODO: for each result range, create an OverlappingCellRange and associated
+  // OverlappingTile
+  // TODO: get all tiles associated with the OverlappingCellRanges
+  // TODO: copy cells
+
+  /*
+// Compute overlapping tiles
+std::vector<std::vector<T>> overlapping_tiles;
+RETURN_NOT_OK(compute_overlapping_tiles<T>(subarray, &overlapping_tiles));
+
+// For each tile, compute a cell range iterator per fragment
+std::vector<std::vector<std::shared_ptr<CellRangeIter<T>>>>
+tile_cell_range_iters; for(const auto& tile : overlapping_tiles) {
+  std::vector<std::shared_ptr<CellRangeIter<T>>> fragment_iters;
+  for(const auto& meta : fragment_metadata_) {
+    auto tile_overlap = compute_overlap<T>((T*) meta->non_empty_domain(),
+subarray); if(there is overlap) { auto iter =
+std::make_shared<CellRangeIter<T>>(tile_overlap, cell_order, layout_);
+      RETURN_NOT_OK(iter->begin());
+      fragment_iters.emplace_back(iter);
+    }
+  }
+  tile_cell_range_iters.push_back(std::move(fragment_iters));
+}
+
+CellRangeIter cell_range_iter<T>(subarray_tile_overlap, cell_order, layout_);
+*/
+
+  // Get the cell ranges
+  // TODO  std::list<DenseCellRange<T>> cell_ranges;
+  DenseCellRangeIter<T> it(domain, subarray, layout_);
+  RETURN_NOT_OK(it.begin());
+  uint64_t tile_idx, start, end;
+  while (!it.end()) {
+    tile_idx = it.tile_idx();
+    start = it.range_start();
+    end = it.range_end();
+
+    std::cout << tile_idx << " " << start << " " << end << "\n";
+
+    // TODO    compute_dense_cell_ranges(fragment_its[tile_idx], start, end,
+    // &cell_ranges);
+    ++it;
+  }
+
+  status_ = QueryStatus::COMPLETED;
+  //  return Status::Ok();
+  return LOG_STATUS(Status::QueryError("Dense reads not supported yet"));
+}
+
 Status Query::sparse_read() {
   auto coords_type = array_schema_->coords_type();
   switch (coords_type) {
@@ -487,8 +585,6 @@ Status Query::sparse_read() {
 
 template <class T>
 Status Query::sparse_read() {
-  status_ = QueryStatus::INPROGRESS;
-
   // Get overlapping tile indexes
   OverlappingTileVec tiles;
   RETURN_NOT_OK(compute_overlapping_tiles<T>(&tiles));
@@ -882,9 +978,6 @@ Status Query::copy_var_cells(
 }
 
 Status Query::read() {
-  if (!array_schema_->dense())
-    return sparse_read();
-
   // Check attributes
   RETURN_NOT_OK(check_attributes());
 
@@ -899,6 +992,13 @@ Status Query::read() {
   }
 
   status_ = QueryStatus::INPROGRESS;
+
+  // Perform dense or sparse read
+  if (array_schema_->dense())
+    return dense_read();
+  return sparse_read();
+
+  /* TODO: remove
 
   // Perform query
   Status st;
@@ -918,6 +1018,8 @@ Status Query::read() {
   }
 
   return st;
+
+   */
 }
 
 Status Query::read(void** buffers, uint64_t* buffer_sizes) {

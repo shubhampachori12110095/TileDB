@@ -476,10 +476,27 @@ class Query {
    */
   Status overflow(const char* attribute_name, unsigned int* overflow) const;
 
-  // TODO
+  /** Perform a dense read */
+  Status dense_read();
+
+  /**
+   * Perform a dense read.
+   *
+   * @tparam The domain type.
+   * @return Status
+   */
+  template <class T>
+  Status dense_read();
+
+  /** Perform a sparse read */
   Status sparse_read();
 
-  // TODO
+  /**
+   * Perform a sparse read.
+   *
+   * @tparam The domain type.
+   * @return Status
+   */
   template <class T>
   Status sparse_read();
 
