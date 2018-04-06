@@ -32,7 +32,7 @@
 #   - The OpenSSL::SSL and OpenSSL::Crypto imported targets
 
 # Search the path set during the superbuild for the EP.
-set(OPENSSL_PATHS ${OPENSSL_DIR})
+set(OPENSSL_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 # Add /usr/local/opt, as Homebrew sometimes installs it there.
 if (NOT TILEDB_DEPS_NO_DEFAULT_PATH)
@@ -101,11 +101,7 @@ if (NOT OPENSSL_FOUND AND TILEDB_SUPERBUILD)
     LOG_INSTALL TRUE
   )
 
-  set(OPENSSL_DIR ${TILEDB_EP_INSTALL_PREFIX})
   list(APPEND TILEDB_EXTERNAL_PROJECTS ep_openssl)
-  list(APPEND FORWARD_EP_CMAKE_ARGS
-    -DOPENSSL_DIR=${OPENSSL_DIR}
-  )
 endif()
 
 if (OPENSSL_FOUND)

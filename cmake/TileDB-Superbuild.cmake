@@ -4,10 +4,6 @@ include (ExternalProject)
 # Common variables
 ############################################################
 
-# Build paths for external projects
-set(TILEDB_EP_BASE "${CMAKE_BINARY_DIR}/externals")
-set(TILEDB_EP_INSTALL_PREFIX "${TILEDB_EP_BASE}/install")
-
 # A variable that will hold the paths to all the dependencies that are built
 # during the superbuild. These paths are passed to the regular non-superbuild
 # build process as CMake arguments.
@@ -29,7 +25,6 @@ set(INHERITED_CMAKE_ARGS
   -DTILEDB_FORCE_ALL_DEPS=${TILEDB_FORCE_ALL_DEPS}
   -DTILEDB_TESTS_AWS_S3_CONFIG=${TILEDB_TESTS_AWS_S3_CONFIG}
   -DSANITIZER=${SANITIZER}
-  -DTILEDB_EP_INSTALL_PREFIX=${TILEDB_EP_INSTALL_PREFIX}
 )
 
 if (WIN32)

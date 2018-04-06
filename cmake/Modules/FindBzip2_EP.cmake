@@ -32,7 +32,7 @@
 #   - The Bzip2::Bzip2 imported target
 
 # Search the path set during the superbuild for the EP.
-set(BZIP2_PATHS ${BZIP2_DIR})
+set(BZIP2_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 find_path(BZIP2_INCLUDE_DIR
   NAMES bzlib.h
@@ -100,10 +100,8 @@ if (NOT BZIP2_FOUND)
         LOG_INSTALL TRUE
       )
     endif()
-    set(BZIP2_DIR ${TILEDB_EP_INSTALL_PREFIX})
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_bzip2)
     list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DBZIP2_DIR=${BZIP2_DIR}
       -DTILEDB_USE_STATIC_BZIP2=TRUE
     )
   else()

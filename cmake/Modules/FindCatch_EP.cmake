@@ -31,7 +31,8 @@
 #   - The Catch::Catch imported target
 
 # Search the path set during the superbuild for the EP.
-set(CATCH_PATHS ${CATCH_INCLUDE_DIR})
+message(STATUS "searching for catch in ${TILEDB_EP_SOURCE_DIR}")
+set(CATCH_PATHS ${TILEDB_EP_SOURCE_DIR}/ep_catch/single_include)
 
 find_path(CATCH_INCLUDE_DIR
   NAMES catch.hpp
@@ -56,12 +57,7 @@ if (NOT CATCH_FOUND AND TILEDB_SUPERBUILD)
     UPDATE_COMMAND ""
     LOG_DOWNLOAD TRUE
   )
-  ExternalProject_Get_Property(ep_catch source_dir)
-  set(CATCH_INCLUDE_DIR ${source_dir}/single_include)
   list(APPEND TILEDB_EXTERNAL_PROJECTS ep_catch)
-  list(APPEND FORWARD_EP_CMAKE_ARGS
-    -DCATCH_INCLUDE_DIR=${CATCH_INCLUDE_DIR}
-  )
 endif()
 
 if (CATCH_FOUND AND NOT TARGET Catch::Catch)

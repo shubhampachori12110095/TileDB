@@ -33,7 +33,7 @@
 #   - The Zstd::Zstd imported target
 
 # Search the path set during the superbuild for the EP.
-set(ZSTD_PATHS ${ZSTD_DIR})
+set(ZSTD_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 find_path(ZSTD_INCLUDE_DIR
   NAMES zstd.h
@@ -88,10 +88,8 @@ if (NOT ZSTD_FOUND)
       LOG_BUILD TRUE
       LOG_INSTALL TRUE
     )
-    set(ZSTD_DIR ${TILEDB_EP_INSTALL_PREFIX})
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_zstd)
     list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DZSTD_DIR=${ZSTD_DIR}
       -DTILEDB_USE_STATIC_ZSTD=TRUE
     )
   else()

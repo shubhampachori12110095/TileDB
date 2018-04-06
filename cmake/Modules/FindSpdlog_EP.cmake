@@ -31,7 +31,7 @@
 #   - The Spdlog::Spdlog imported target
 
 # Search the path set during the superbuild for the EP.
-set(SPDLOG_PATHS ${SPDLOG_INCLUDE_DIR})
+set(SPDLOG_PATHS ${TILEDB_EP_SOURCE_DIR}/ep_spdlog/include)
 
 find_path(SPDLOG_INCLUDE_DIR
   NAMES spdlog/spdlog.h
@@ -56,12 +56,7 @@ if (NOT SPDLOG_FOUND AND TILEDB_SUPERBUILD)
     UPDATE_COMMAND ""
     LOG_DOWNLOAD TRUE
   )
-  ExternalProject_Get_Property(ep_spdlog source_dir)
-  set(SPDLOG_INCLUDE_DIR ${source_dir}/include)
   list(APPEND TILEDB_EXTERNAL_PROJECTS ep_spdlog)
-  list(APPEND FORWARD_EP_CMAKE_ARGS
-    -DSPDLOG_INCLUDE_DIR=${SPDLOG_INCLUDE_DIR}
-  )
 endif()
 
 if (SPDLOG_FOUND AND NOT TARGET Spdlog::Spdlog)

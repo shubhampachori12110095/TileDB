@@ -66,8 +66,10 @@ option(TILEDB_CPP_API "Enables building of the TileDB C++ API." ON)
 # Superbuild setup
 ############################################################
 
-# Set this to silence innocuous CMake warnings about it being unused.
-set(TILEDB_EP_INSTALL_PREFIX ${TILEDB_EP_INSTALL_PREFIX})
+# Build paths for external projects (and then finding them)
+set(TILEDB_EP_BASE "${CMAKE_BINARY_DIR}/externals")
+set(TILEDB_EP_SOURCE_DIR "${TILEDB_EP_BASE}/src")
+set(TILEDB_EP_INSTALL_PREFIX "${TILEDB_EP_BASE}/install")
 
 # Set the variable used when calling find_package(), find_file() etc.
 # to determine if NO_DEFAULT_PATH should be passed.

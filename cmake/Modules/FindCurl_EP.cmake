@@ -32,7 +32,7 @@
 #   - The Curl::Curl imported target
 
 # Search the path set during the superbuild for the EP.
-set(CURL_PATHS ${CURL_DIR})
+set(CURL_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 # First try the CMake-provided find script.
 find_package(CURL QUIET ${TILEDB_DEPS_NO_DEFAULT_PATH})
@@ -93,12 +93,7 @@ if (NOT CURL_FOUND AND TILEDB_SUPERBUILD)
     LOG_INSTALL TRUE
     DEPENDS ${DEPENDS}
   )
-
-  set(CURL_DIR ${TILEDB_EP_INSTALL_PREFIX})
   list(APPEND TILEDB_EXTERNAL_PROJECTS ep_curl)
-  list(APPEND FORWARD_EP_CMAKE_ARGS
-    -DCURL_DIR=${CURL_DIR}
-  )
 endif()
 
 if (CURL_FOUND AND NOT TARGET Curl::Curl)

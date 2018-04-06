@@ -32,7 +32,7 @@
 #   - The Blosc::Blosc imported target
 
 # Search the path set during the superbuild for the EP.
-set(BLOSC_PATHS ${BLOSC_DIR})
+set(BLOSC_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 find_path(BLOSC_INCLUDE_DIR
   NAMES blosc.h
@@ -97,10 +97,8 @@ if (NOT BLOSC_FOUND)
       )
     endif()
 
-    set(BLOSC_DIR ${TILEDB_EP_INSTALL_PREFIX})
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_blosc)
     list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DBLOSC_DIR=${BLOSC_DIR}
       -DTILEDB_USE_STATIC_BLOSC=TRUE
     )
   else()

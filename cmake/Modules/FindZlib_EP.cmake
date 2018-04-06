@@ -31,7 +31,7 @@
 #   - The Zlib::Zlib imported target
 
 # Search the path set during the superbuild for the EP.
-set(ZLIB_PATHS ${ZLIB_DIR})
+set(ZLIB_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 # First try the builtin find module.
 find_package(ZLIB QUIET ${TILEDB_DEPS_NO_DEFAULT_PATH})
@@ -77,11 +77,7 @@ if (NOT ZLIB_FOUND)
       LOG_BUILD TRUE
       LOG_INSTALL TRUE
     )
-    set(ZLIB_DIR ${TILEDB_EP_INSTALL_PREFIX})
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_zlib)
-    list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DZLIB_DIR=${ZLIB_DIR}
-    )
   else()
     message(FATAL_ERROR "Unable to find Zlib")
   endif()

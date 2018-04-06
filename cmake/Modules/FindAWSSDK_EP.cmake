@@ -33,10 +33,12 @@
 # modules.
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${TILEDB_EP_INSTALL_PREFIX}")
 
+# Try searching for the SDK in the EP prefix.
+set(AWSSDK_ROOT_DIR "${TILEDB_EP_INSTALL_PREFIX}")
+
 # Check to see if the SDK is installed (which provides the find module).
 # This will either use the system-installed AWSSDK find module (if present),
-# or the superbuild-installed find module. If the superbuild EP was used, it
-# will set the AWSSDK_ROOT_DIR variable used by this find module.
+# or the superbuild-installed find module.
 if (TILEDB_SUPERBUILD)
   # Don't use find_package in superbuild if we are forcing all deps.
   # That's because the AWSSDK config file hard-codes a search of /usr,
@@ -83,9 +85,6 @@ if (NOT AWSSDK_FOUND)
       DEPENDS ${DEPENDS}
     )
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_awssdk)
-    list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DAWSSDK_ROOT_DIR=${TILEDB_EP_INSTALL_PREFIX}
-    )
   else ()
     message(FATAL_ERROR "Could not find AWSSDK (required).")
   endif ()

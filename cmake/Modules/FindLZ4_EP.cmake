@@ -32,7 +32,7 @@
 #   - The LZ4::LZ4 imported target
 
 # Search the path set during the superbuild for the EP.
-set(LZ4_PATHS ${LZ4_DIR})
+set(LZ4_PATHS ${TILEDB_EP_INSTALL_PREFIX})
 
 find_path(LZ4_INCLUDE_DIR
   NAMES lz4.h
@@ -117,10 +117,8 @@ if (NOT LZ4_FOUND)
         LOG_INSTALL TRUE
       )
     endif()
-    set(LZ4_DIR ${TILEDB_EP_INSTALL_PREFIX})
     list(APPEND TILEDB_EXTERNAL_PROJECTS ep_lz4)
     list(APPEND FORWARD_EP_CMAKE_ARGS
-      -DLZ4_DIR=${LZ4_DIR}
       -DTILEDB_USE_STATIC_LZ4=TRUE
     )
   else()
