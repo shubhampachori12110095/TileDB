@@ -37,7 +37,16 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "${TILEDB_EP_INSTALL_PREFIX}")
 # This will either use the system-installed AWSSDK find module (if present),
 # or the superbuild-installed find module. If the superbuild EP was used, it
 # will set the AWSSDK_ROOT_DIR variable used by this find module.
-find_package(AWSSDK CONFIG QUIET)
+if (TILEDB_SUPERBUILD)
+  # Don't use find_package in superbuild if we are forcing all deps.
+  # That's because the AWSSDK config file hard-codes a search of /usr,
+  # /usr/local, etc.
+  if (NOT TILEDB_FORCE_ALL_DEPS)
+    find_package(AWSSDK CONFIG QUIET)
+  endif()
+else()
+  find_package(AWSSDK CONFIG QUIET)
+endif()
 
 if (NOT AWSSDK_FOUND)
   if (TILEDB_SUPERBUILD)
@@ -89,6 +98,7 @@ if (AWSSDK_FOUND)
     find_library("AWS_FOUND_${LIB}"
       NAMES ${LIB}
       PATHS ${AWSSDK_LIB_DIR}
+      ${TILEDB_DEPS_NO_DEFAULT_PATH}
     )
     message(STATUS "Found AWS lib: ${LIB}")
     if (NOT TARGET AWSSDK::${LIB})

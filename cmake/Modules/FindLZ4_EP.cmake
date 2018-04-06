@@ -38,6 +38,7 @@ find_path(LZ4_INCLUDE_DIR
   NAMES lz4.h
   PATHS ${LZ4_PATHS}
   PATH_SUFFIXES include
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 
@@ -49,6 +50,7 @@ if (TILEDB_USE_STATIC_LZ4)
       liblz4_static${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${LZ4_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 else()
   find_library(LZ4_LIBRARIES
@@ -56,6 +58,7 @@ else()
       lz4 liblz4
     PATHS ${LZ4_PATHS}
     PATH_SUFFIXES lib bin
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 endif()
 

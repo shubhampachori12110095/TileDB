@@ -32,12 +32,16 @@
 #   - The OpenSSL::SSL and OpenSSL::Crypto imported targets
 
 # Search the path set during the superbuild for the EP.
+set(OPENSSL_PATHS ${OPENSSL_DIR})
+
 # Add /usr/local/opt, as Homebrew sometimes installs it there.
-set(OPENSSL_PATHS ${OPENSSL_DIR} /usr/local/opt/openssl)
+if (NOT TILEDB_DEPS_NO_DEFAULT_PATH)
+  list(APPEND OPENSSL_PATHS /usr/local/opt/openssl)
+endif()
 
 # First try the CMake-provided find script.
 set(OPENSSL_ROOT_DIR ${OPENSSL_PATHS})
-find_package(OpenSSL QUIET)
+find_package(OpenSSL QUIET ${TILEDB_DEPS_NO_DEFAULT_PATH})
 
 # Next try finding the superbuild external project
 if (NOT OPENSSL_FOUND)
@@ -45,6 +49,7 @@ if (NOT OPENSSL_FOUND)
     NAMES openssl/ssl.h
     PATHS ${OPENSSL_PATHS}
     PATH_SUFFIXES include
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   # Link statically if installed with the EP.
@@ -53,6 +58,7 @@ if (NOT OPENSSL_FOUND)
       libssl${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${OPENSSL_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   find_library(OPENSSL_CRYPTO_LIBRARY
@@ -60,6 +66,7 @@ if (NOT OPENSSL_FOUND)
       libcrypto${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${OPENSSL_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   include(FindPackageHandleStandardArgs)
@@ -69,7 +76,6 @@ if (NOT OPENSSL_FOUND)
 endif()
 
 if (NOT OPENSSL_FOUND AND TILEDB_SUPERBUILD)
-  message(STATUS "Could NOT find OpenSSL")
   message(STATUS "Adding OpenSSL as an external project")
 
   if (WIN32)
@@ -103,6 +109,7 @@ if (NOT OPENSSL_FOUND AND TILEDB_SUPERBUILD)
 endif()
 
 if (OPENSSL_FOUND)
+  message(STATUS "Found OpenSSL: ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY}")
   if (NOT TARGET OpenSSL::SSL)
     add_library(OpenSSL::SSL UNKNOWN IMPORTED)
     set_target_properties(OpenSSL::SSL PROPERTIES

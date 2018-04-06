@@ -38,6 +38,7 @@ find_path(BLOSC_INCLUDE_DIR
   NAMES blosc.h
   PATHS ${BLOSC_PATHS}
   PATH_SUFFIXES include
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 # Link statically if installed with the EP.
@@ -47,6 +48,7 @@ if (TILEDB_USE_STATIC_BLOSC)
       libblosc${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${BLOSC_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 else()
   find_library(BLOSC_LIBRARIES
@@ -54,6 +56,7 @@ else()
       blosc libblosc
     PATHS ${BLOSC_PATHS}
     PATH_SUFFIXES lib bin
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 endif()
 

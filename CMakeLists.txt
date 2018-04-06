@@ -54,7 +54,8 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Don't use GNU extensions
 # Note: when adding options, make sure to forward them via INHERITED_CMAKE_ARGS
 # in TileDB-Superbuild.cmake.
 
-option(TILEDB_SUPERBUILD "If true, perform a superbuild (builds all dependencies)." ON)
+option(TILEDB_SUPERBUILD "If true, perform a superbuild (builds all missing dependencies)." ON)
+option(TILEDB_FORCE_ALL_DEPS "If true, force superbuild to download and build all dependencies, even those installed on the system." OFF)
 option(TILEDB_VERBOSE "Prints TileDB errors with verbosity" OFF)
 option(TILEDB_S3 "Enables S3/minio support using aws-cpp-sdk" OFF)
 option(TILEDB_HDFS "Enables HDFS support using the official Hadoop JNI bindings" OFF)
@@ -67,6 +68,14 @@ option(TILEDB_CPP_API "Enables building of the TileDB C++ API." ON)
 
 # Set this to silence innocuous CMake warnings about it being unused.
 set(TILEDB_EP_INSTALL_PREFIX ${TILEDB_EP_INSTALL_PREFIX})
+
+# Set the variable used when calling find_package(), find_file() etc.
+# to determine if NO_DEFAULT_PATH should be passed.
+if (TILEDB_FORCE_ALL_DEPS)
+  set(TILEDB_DEPS_NO_DEFAULT_PATH NO_DEFAULT_PATH)
+else()
+  set(TILEDB_DEPS_NO_DEFAULT_PATH)
+endif()
 
 if (TILEDB_SUPERBUILD)
   message(STATUS "Starting TileDB superbuild.")

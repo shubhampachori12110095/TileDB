@@ -26,6 +26,7 @@ set(INHERITED_CMAKE_ARGS
   -DTILEDB_HDFS=${TILEDB_HDFS}
   -DTILEDB_WERROR=${TILEDB_WERROR}
   -DTILEDB_CPP_API=${TILEDB_CPP_API}
+  -DTILEDB_FORCE_ALL_DEPS=${TILEDB_FORCE_ALL_DEPS}
   -DTILEDB_TESTS_AWS_S3_CONFIG=${TILEDB_TESTS_AWS_S3_CONFIG}
   -DSANITIZER=${SANITIZER}
   -DTILEDB_EP_INSTALL_PREFIX=${TILEDB_EP_INSTALL_PREFIX}
@@ -40,6 +41,10 @@ endif()
 ############################################################
 # Set up external projects for dependencies
 ############################################################
+
+if (TILEDB_FORCE_ALL_DEPS)
+  message(STATUS "Forcing superbuild to build all dependencies as ExternalProjects.")
+endif()
 
 # These includes modify the TILEDB_EXTERNAL_PROJECTS and FORWARD_EP_CMAKE_ARGS
 # variables.

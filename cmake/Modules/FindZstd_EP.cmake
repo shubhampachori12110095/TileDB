@@ -39,6 +39,7 @@ find_path(ZSTD_INCLUDE_DIR
   NAMES zstd.h
   PATHS ${ZSTD_PATHS}
   PATH_SUFFIXES include
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 # Link statically if installed with the EP.
@@ -49,6 +50,7 @@ if (TILEDB_USE_STATIC_ZSTD)
       zstd_static${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${ZSTD_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 else()
   find_library(ZSTD_LIBRARIES
@@ -56,6 +58,7 @@ else()
       zstd libzstd
     PATHS ${ZSTD_PATHS}
     PATH_SUFFIXES lib bin
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 endif()
 

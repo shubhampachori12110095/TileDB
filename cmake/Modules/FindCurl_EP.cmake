@@ -35,7 +35,7 @@
 set(CURL_PATHS ${CURL_DIR})
 
 # First try the CMake-provided find script.
-find_package(CURL QUIET)
+find_package(CURL QUIET ${TILEDB_DEPS_NO_DEFAULT_PATH})
 
 # Next try finding the superbuild external project
 if (NOT CURL_FOUND)
@@ -43,6 +43,7 @@ if (NOT CURL_FOUND)
     NAMES curl/curl.h
     PATHS ${CURL_PATHS}
     PATH_SUFFIXES include
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   # Link statically if installed with the EP.
@@ -51,6 +52,7 @@ if (NOT CURL_FOUND)
       libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${CURL_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   include(FindPackageHandleStandardArgs)
@@ -60,7 +62,6 @@ if (NOT CURL_FOUND)
 endif()
 
 if (NOT CURL_FOUND AND TILEDB_SUPERBUILD)
-  message(STATUS "Could NOT find Curl")
   message(STATUS "Adding Curl as an external project")
 
   if (WIN32)
@@ -101,6 +102,7 @@ if (NOT CURL_FOUND AND TILEDB_SUPERBUILD)
 endif()
 
 if (CURL_FOUND AND NOT TARGET Curl::Curl)
+  message(STATUS "Found Curl: ${CURL_LIBRARIES}")
   add_library(Curl::Curl UNKNOWN IMPORTED)
   set_target_properties(Curl::Curl PROPERTIES
     IMPORTED_LOCATION "${CURL_LIBRARIES}"

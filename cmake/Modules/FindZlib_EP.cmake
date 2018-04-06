@@ -30,17 +30,19 @@
 #   - ZLIB_FOUND, whether Zlib has been found
 #   - The Zlib::Zlib imported target
 
-# First try the CMake-provided find script.
-find_package(ZLIB QUIET)
+# Search the path set during the superbuild for the EP.
+set(ZLIB_PATHS ${ZLIB_DIR})
+
+# First try the builtin find module.
+find_package(ZLIB QUIET ${TILEDB_DEPS_NO_DEFAULT_PATH})
 
 # Next try finding the superbuild external project
 if (NOT ZLIB_FOUND)
-  set(ZLIB_PATHS ${ZLIB_DIR})
-
   find_path(ZLIB_INCLUDE_DIR
     NAMES zlib.h
     PATHS ${ZLIB_PATHS}
     PATH_SUFFIXES include
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   # Link statically if installed with the EP.
@@ -50,6 +52,7 @@ if (NOT ZLIB_FOUND)
       zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${ZLIB_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 
   include(FindPackageHandleStandardArgs)
@@ -61,7 +64,6 @@ endif()
 # If not found, add it as an external project
 if (NOT ZLIB_FOUND)
   if (TILEDB_SUPERBUILD)
-    message(STATUS "Could NOT find Zlib")
     message(STATUS "Adding Zlib as an external project")
     ExternalProject_Add(ep_zlib
       PREFIX "externals"

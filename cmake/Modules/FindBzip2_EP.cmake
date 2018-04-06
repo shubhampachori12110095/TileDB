@@ -38,6 +38,7 @@ find_path(BZIP2_INCLUDE_DIR
   NAMES bzlib.h
   PATHS ${BZIP2_PATHS}
   PATH_SUFFIXES include
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 # Link statically if installed with the EP.
@@ -48,6 +49,7 @@ if (TILEDB_USE_STATIC_BZIP2)
       libbz2${CMAKE_STATIC_LIBRARY_SUFFIX}
     PATHS ${BZIP2_PATHS}
     PATH_SUFFIXES lib
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 else()
   find_library(BZIP2_LIBRARIES
@@ -55,6 +57,7 @@ else()
       bz2 libbz2
     PATHS ${BZIP2_PATHS}
     PATH_SUFFIXES lib bin
+    ${TILEDB_DEPS_NO_DEFAULT_PATH}
   )
 endif()
 

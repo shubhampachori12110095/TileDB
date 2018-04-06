@@ -36,6 +36,7 @@ set(SPDLOG_PATHS ${SPDLOG_INCLUDE_DIR})
 find_path(SPDLOG_INCLUDE_DIR
   NAMES spdlog/spdlog.h
   PATHS ${SPDLOG_PATHS}
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 include(FindPackageHandleStandardArgs)

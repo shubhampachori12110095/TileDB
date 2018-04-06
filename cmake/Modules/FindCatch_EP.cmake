@@ -36,6 +36,7 @@ set(CATCH_PATHS ${CATCH_INCLUDE_DIR})
 find_path(CATCH_INCLUDE_DIR
   NAMES catch.hpp
   PATHS ${CATCH_PATHS}
+  ${TILEDB_DEPS_NO_DEFAULT_PATH}
 )
 
 include(FindPackageHandleStandardArgs)
